@@ -88,6 +88,53 @@ tfoot td{font-weight:600;border-bottom:0}
 .seg button.on{background:var(--ink);color:#fff}
 .badge{align-self:flex-start;background:var(--gold);color:var(--ink);font:800 .75rem var(--display);letter-spacing:.15em;padding:.25rem .6rem;border-radius:4px}
 @media(max-width:760px){.login{grid-template-columns:1fr}.login-hero{padding:2.5rem 1.5rem}}
+html{-webkit-text-size-adjust:100%}
+.chip{white-space:nowrap}
+.thumb{display:block;position:relative;width:100%;padding:0;border-radius:0;background:#000}
+.thumb:hover{background:#000}
+.play{position:absolute;left:.5rem;bottom:.5rem;background:#000b;color:#fff;border-radius:99px;padding:.1rem .6rem;font-size:.8rem}
+a.dl{color:var(--blue-dark);font-weight:500;font-size:.9rem;text-decoration:none}
+a.btn{display:inline-block;padding:.65rem 1.1rem;border-radius:6px;background:var(--blue);color:#fff;font:600 .95rem var(--body);text-decoration:none}
+.viewer img,.viewer video{display:block;width:100%;max-height:75vh;object-fit:contain;background:#000;border-radius:6px}
+.menu{display:flex;flex:1;align-items:center;justify-content:space-between;gap:.6rem 1.5rem;flex-wrap:wrap}
+.burger{display:none;flex-direction:column;justify-content:center;gap:5px;background:transparent;padding:.5rem;margin-left:-.4rem}
+.burger:hover{background:#ffffff1a}
+.burger span{display:block;width:24px;height:3px;border-radius:2px;background:#fff}
+@media(max-width:800px){
+  body{font-size:15px}
+  h1{font-size:1.5rem;margin-bottom:1rem}
+  h2{font-size:1.05rem;margin-bottom:.75rem}
+  input,select,textarea{font-size:16px}
+  button{padding:.6rem .9rem}
+  .bar{position:sticky;top:0;z-index:20;justify-content:flex-start;gap:.6rem;padding:.45rem .9rem}
+  .burger{display:flex}
+  .brand{font-size:1.05rem;letter-spacing:.1em}
+  .menu{display:none;flex:0 0 100%;flex-direction:column;align-items:stretch;gap:.5rem;padding:.3rem 0 .4rem}
+  .menu.open{display:flex}
+  .bar nav{flex-direction:column;gap:.15rem;flex:none}
+  .bar nav button{text-align:left;padding:.7rem .8rem;font-size:1rem}
+  .who{flex-wrap:wrap;gap:.5rem;border-top:1px solid #ffffff2a;padding-top:.6rem}
+  .who span{flex:1 0 100%;margin:0}
+  .page{padding:1rem .85rem 3rem}
+  .panel{padding:.9rem;margin-bottom:1rem}
+  .stats{grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem}
+  .stat{padding:.65rem .75rem}
+  .stat strong{font-size:1.15rem}
+  .stat span{font-size:.78rem}
+  .months{grid-template-columns:repeat(3,1fr);gap:.5rem}
+  .tile{padding:.45rem .5rem}
+  .tile small{font-size:.72rem}
+  .grid{grid-template-columns:1fr;gap:.8rem}
+  .gallery{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem}
+  th,td{padding:.5rem .45rem;font-size:.85rem}
+  .big{padding:1.25rem .5rem}
+  .big .amt{font-size:2rem}
+  .login-hero{padding:1.25rem 1rem;gap:.5rem}
+  .beads{width:64px}
+  .login-hero h1{font-size:1.9rem}
+  .login-hero p{font-size:.95rem}
+  .login-form{padding:1.25rem 0 2rem;gap:.8rem}
+}
 </style>
 </head>
 <body>
@@ -109,7 +156,7 @@ let users = LS.get('hm_users', null);
 if (!users) { users = [{id:1,name:'Administrator',phone:'0000000000',pw:ADMIN_PW,role:'ADMIN',joined:cur}]; LS.set('hm_users', users); }
 let pays = LS.get('hm_pays', []), anns = LS.get('hm_anns', []), pin = LS.get('hm_pin', ''), marks = LS.get('hm_marks', []), bin = LS.get('hm_bin', []);
 let session = JSON.parse(sessionStorage.getItem('hm_session') || 'null');
-let page = null, hist = [], mode = 'login', notice = '', reveal = false, viewId = null, adminMonth = cur, fails = 0, lockUntil = 0, yr = new Date().getFullYear(), filter = '', last = {userId:'', month:cur}, urls = [];
+let page = null, hist = [], mode = 'login', notice = '', reveal = false, viewId = null, adminMonth = cur, fails = 0, lockUntil = 0, menuOpen = false, shownPage = null, viewMediaId = null, yr = new Date().getFullYear(), filter = '', last = {userId:'', month:cur}, urls = [];
 const save = () => { LS.set('hm_users', users); LS.set('hm_pays', pays); LS.set('hm_anns', anns); LS.set('hm_pin', pin); LS.set('hm_marks', marks); LS.set('hm_bin', bin); };
 const nextId = l => l.reduce((m,x)=>Math.max(m,x.id),0) + 1;
 const toBin = (kind, item) => bin.push({bid: bin.reduce((m,x)=>Math.max(m,x.bid),0) + 1, kind, item, at: Date.now()});
@@ -138,10 +185,10 @@ const allMedia = async () => (await tx('readonly', s=>s.getAll())).filter(m=>!m.
 const deletedMedia = async () => (await tx('readonly', s=>s.getAll())).filter(m=>m.deleted).sort((a,b)=>b.deleted-a.deleted);
 
 /* ===== navigation (with Back) ===== */
-const go = p => { reveal = false; if (p !== page) { if (page) hist.push(page); page = p; } };
+const go = p => { reveal = false; menuOpen = false; if (p !== page) { if (page) hist.push(page); page = p; } };
 const NAV = {
-  MEMBER: [['dashboard','Dashboard'],['records','My Records'],['current','Current Month'],['events','Events & Announcements'],['account','Account']],
-  ADMIN:  [['dashboard','Dashboard'],['payments','Payments'],['members','Members'],['events','Events & Announcements'],['trash','Deleted items']]
+  MEMBER: [['dashboard','Dashboard'],['records','My Records'],['current','Current Month'],['events','Events & Announcements'],['photos','Photos & Videos'],['account','Account']],
+  ADMIN:  [['dashboard','Dashboard'],['payments','Payments'],['members','Members'],['events','Events & Announcements'],['photos','Photos & Videos'],['trash','Deleted items']]
 };
 
 /* ===== views ===== */
@@ -157,7 +204,7 @@ const loginView = () => {
 <h2>${title}</h2>
 ${notice?`<p class="hint" style="color:var(--green);font-weight:600">${esc(notice)}</p>`:''}
 ${setting?'<label>Full name<input name="name" autocomplete="name" required></label>':''}
-${admin?'':'<label>Phone number<input name="phone" type="tel" inputmode="tel" placeholder="0241234567" autocomplete="tel" required></label>'}
+${admin?'':'<label>Phone number<input name="phone" type="tel" inputmode="tel" autocomplete="tel" required></label>'}
 <label>${mode==='forgot'?'New password':admin?'Admin password':'Password'}<input type="password" name="pw" id="pw" minlength="${setting?6:1}" autocomplete="${setting?'new-password':'current-password'}" required></label>
 <label style="display:flex;gap:.5rem;align-items:center;font-weight:400"><input type="checkbox" data-act="showpw" style="width:auto"> Show password</label>
 <p class="error" id="err" role="alert" hidden></p>
@@ -167,15 +214,20 @@ ${admin?'':`<button type="button" class="link" data-act="mode" data-id="${mode==
 ${admin?'<p class="hint">Enter the administrator password. Members use the Member tab.</p>':''}
 ${mode==='forgot'?'<p class="hint">Enter the full name and phone number you used to create your account, then choose a new password.</p>':''}</form></div>`; };
 
-const header = () => `<header class="bar"><div class="brand">HAIL MARY</div>
-<nav>${NAV[session.role].map(([id,l])=>`<button class="${page===id||(id==='members'&&page==='member')?'on':''}" data-act="nav" data-id="${id}">${l}</button>`).join('')}</nav>
-<div class="who"><span>${esc(session.name)}</span><button class="ghost" data-act="back"${hist.length?'':' disabled'}>← Back</button><button class="ghost" data-act="logout">Log out</button></div></header>`;
+const header = () => `<header class="bar"><button class="burger" data-act="menu" aria-label="Menu" aria-expanded="${menuOpen}"><span></span><span></span><span></span></button><div class="brand">HAIL MARY</div>
+<div class="menu${menuOpen?' open':''}"><nav>${NAV[session.role].map(([id,l])=>`<button class="${page===id||(id==='members'&&page==='member')||(id==='photos'&&page==='photo')?'on':''}" data-act="nav" data-id="${id}">${l}</button>`).join('')}</nav>
+<div class="who"><span>${esc(session.name)}</span><button class="ghost" data-act="back"${hist.length?'':' disabled'}>← Back</button><button class="ghost" data-act="logout">Log out</button></div></div></header>`;
+
+const extOf = t => ({'image/jpeg':'.jpg','image/png':'.png','image/gif':'.gif','image/webp':'.webp','video/mp4':'.mp4','video/webm':'.webm','video/quicktime':'.mov'}[t] || '');
+const fileName = m => m.name || ((m.title || 'file').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-') || 'file') + extOf(m.type);
 
 function gallery(media, admin) {
   if (!media.length) return '<p class="empty">No photos or videos have been uploaded yet.</p>';
   return `<div class="gallery">${media.map(m => { const u = URL.createObjectURL(m.blob); urls.push(u);
-    const el = m.type.startsWith('video/') ? `<video src="${u}" controls preload="metadata"></video>` : `<img src="${u}" alt="${esc(m.title)}">`;
-    return `<figure>${el}<figcaption><span>${esc(m.title)}</span>${admin?`<button class="link danger" data-act="delMedia" data-id="${m.id}">Delete</button>`:''}</figcaption></figure>`; }).join('')}</div>`;
+    const vid = m.type.startsWith('video/');
+    const el = vid ? `<video src="${u}" preload="metadata" muted playsinline></video>` : `<img src="${u}" alt="${esc(m.title)}" loading="lazy">`;
+    return `<figure><button class="thumb" data-act="viewPhoto" data-id="${m.id}" aria-label="Open ${esc(m.title)}">${el}${vid?'<span class="play">▶ Video</span>':''}</button>
+<figcaption><span>${esc(m.title)}</span><span><a class="dl" href="${u}" download="${esc(fileName(m))}">Download</a>${admin?` &nbsp; <button class="link danger" data-act="delMedia" data-id="${m.id}">Delete</button>`:''}</span></figcaption></figure>`; }).join('')}</div>`;
 }
 
 const LABEL = {paid:'Paid',partial:'Part paid',due:'Due now',overdue:'Overdue',missed:'Not paid',future:'Upcoming',na:'—'};
@@ -245,14 +297,29 @@ function currentView() {
 <p class="amt">${cedis(amt)} <small style="font-size:1rem;color:var(--muted)">of ${cedis(FEE)}</small></p><p>${msg}</p></section>`;
 }
 
-function eventsView(media) {
+function eventsView() {
   const admin = session.role === 'ADMIN', list = [...anns].sort((a,b)=>b.at-a.at);
   return `<h1>Events & Announcements</h1>
 ${admin?`<section class="panel"><h2>Post an announcement or event</h2><form class="grid" id="addAnn"><label>Title<input name="title" required></label><label>Event date (optional)<input type="date" name="date"></label>
-<label class="wide">Details<textarea name="body" required></textarea></label><button>Post</button></form></section>
-<section class="panel"><h2>Upload a photo or video</h2><form class="grid" id="upload"><label>Title<input name="title" required></label><label>File<input type="file" name="file" accept="image/*,video/*" required></label><button>Upload</button></form></section>`:''}
-<section class="panel"><h2>Upcoming events and announcements</h2>${list.length?list.map(a=>`<article class="ann">${a.date?`<span class="chip due">${dateLabel(a.date)}</span>`:''}<h3>${esc(a.title)}</h3><p>${esc(a.body)}</p>${admin?`<button class="link danger" data-act="delAnn" data-id="${a.id}">Delete</button>`:''}</article>`).join(''):'<p class="empty">Nothing has been announced yet.</p>'}</section>
-<section class="panel"><h2>Photos and videos</h2>${gallery(media,admin)}</section>`;
+<label class="wide">Details<textarea name="body" required></textarea></label><button>Post</button></form></section>`:''}
+<section class="panel"><h2>Upcoming events and announcements</h2>${list.length?list.map(a=>`<article class="ann">${a.date?`<span class="chip due">${dateLabel(a.date)}</span>`:''}<h3>${esc(a.title)}</h3><p>${esc(a.body)}</p>${admin?`<button class="link danger" data-act="delAnn" data-id="${a.id}">Delete</button>`:''}</article>`).join(''):'<p class="empty">Nothing has been announced yet.</p>'}</section>`;
+}
+
+function photosView(media) {
+  const admin = session.role === 'ADMIN';
+  return `<h1>Photos & Videos</h1>
+${admin?`<section class="panel"><h2>Upload a photo or video</h2><form class="grid" id="upload"><label>Title<input name="title" required></label><label>File<input type="file" name="file" accept="image/*,video/*" required></label><button>Upload</button></form></section>`:''}
+<section class="panel"><h2>Event photos and videos</h2><p class="hint">Tap a photo or video to open it on its own page, where you can download it.</p><br>${gallery(media, admin)}</section>`;
+}
+
+function photoView(m) {
+  if (!m || m.deleted) return `<p><button class="pale" data-act="nav" data-id="photos">← All photos</button></p><h1>Not found</h1><p class="empty">That file is no longer available.</p>`;
+  const u = URL.createObjectURL(m.blob); urls.push(u);
+  const el = m.type.startsWith('video/') ? `<video src="${u}" controls playsinline></video>` : `<img src="${u}" alt="${esc(m.title)}">`;
+  return `<p><button class="pale" data-act="nav" data-id="photos">← All photos</button></p>
+<section class="panel"><h2>${esc(m.title)}</h2><div class="viewer">${el}</div>
+<div class="actions" style="margin-top:1rem"><a class="btn" href="${u}" download="${esc(fileName(m))}">Download</a><span class="hint">${new Date(m.at).toLocaleDateString()}</span></div>
+<p class="hint" style="margin-top:.6rem">If the file opens instead of saving, press and hold it, then choose Save or Download.</p></section>`;
 }
 
 function paymentsView() {
@@ -315,10 +382,12 @@ function accountView() {
 async function render() {
   urls.forEach(u=>URL.revokeObjectURL(u)); urls = [];
   if (!session) { $('#app').innerHTML = loginView(); return; }
-  const media = page === 'events' ? await allMedia() : [];
+  const media = page === 'photos' ? await allMedia() : [];
+  const one = page === 'photo' ? await tx('readonly', s=>s.get(viewMediaId)) : null;
   const binned = page === 'trash' ? await deletedMedia() : [];
-  const views = { dashboard:()=>session.role==='ADMIN'?adminDashboardView():dashboardView(), records:recordsView, current:currentView, events:()=>eventsView(media), payments:paymentsView, members:membersView, member:memberView, account:accountView, trash:()=>trashView(binned) };
+  const views = { dashboard:()=>session.role==='ADMIN'?adminDashboardView():dashboardView(), records:recordsView, current:currentView, events:eventsView, photos:()=>photosView(media), photo:()=>photoView(one), payments:paymentsView, members:membersView, member:memberView, account:accountView, trash:()=>trashView(binned) };
   $('#app').innerHTML = header() + `<main class="page">${views[page]()}</main>`;
+  if (page !== shownPage) { shownPage = page; if (window.scrollTo) window.scrollTo(0, 0); }
 }
 const showError = m => { const e = $('#err'); if (e) { e.textContent = m; e.hidden = false; } };
 const signIn = u => { session = {id:u.id, name:u.name, role:u.role}; sessionStorage.setItem('hm_session', JSON.stringify(session)); hist = []; notice = ''; page = 'dashboard'; };
@@ -333,7 +402,7 @@ document.addEventListener('submit', async e => {
     fails = 0; signIn(adm);
   } else if (f.id === 'login') {
     const phone = normPhone(d.phone);
-    if (!phone) return showError('Enter a valid phone number, for example 0241234567');
+    if (!phone) return showError('Enter a valid 10-digit phone number');
     const acct = users.find(x=>x.phone===phone);
     if (!acct) return showError('No account was found for that phone number. Check the number, or create an account.');
     if (!(await checkPw(acct, d.pw))) return showError(f.id === 'login' ? 'Wrong password. Try again, or use "Forgot your password?"' : 'Wrong password. Try again.');
@@ -348,7 +417,7 @@ document.addEventListener('submit', async e => {
     await setPw(acct, d.pw); save(); mode = 'login'; notice = 'Your password has been changed. Sign in with the new password.';
   } else if (f.id === 'signup') {
     const phone = normPhone(d.phone);
-    if (!phone) return showError('Enter a valid phone number, for example 0241234567');
+    if (!phone) return showError('Enter a valid 10-digit phone number');
     if (users.some(x=>x.phone===phone)) return showError('That phone number already has an account');
     const u = {id:nextId(users), name:d.name.trim().replace(/\s+/g,' '), phone, role:'MEMBER', joined:cur};
     await setPw(u, d.pw); users.push(u); save(); signIn(u);
@@ -381,7 +450,7 @@ document.addEventListener('submit', async e => {
     anns.push({id:nextId(anns), title:d.title.trim(), date:d.date, body:d.body.trim(), at:Date.now()}); save();
   } else if (f.id === 'upload') {
     const file = f.file.files[0];
-    await tx('readwrite', s => s.add({title:d.title.trim(), type:file.type, blob:file, at:Date.now()}));
+    await tx('readwrite', s => s.add({title:d.title.trim(), type:file.type, blob:file, name:file.name, at:Date.now()}));
   }
   render();
 });
@@ -398,7 +467,8 @@ document.addEventListener('change', e => {
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const act = b.dataset.act, id = Number(b.dataset.id);
-  if (act === 'showpw') { $('#pw').type = b.checked ? 'text' : 'password'; return; }
+  if (act === 'menu') { menuOpen = !menuOpen; const mn = document.querySelector('.menu'); if (mn) mn.classList.toggle('open', menuOpen); b.setAttribute('aria-expanded', String(menuOpen)); return; }
+  else if (act === 'showpw') { $('#pw').type = b.checked ? 'text' : 'password'; return; }
   else if (act === 'mode') { mode = b.dataset.id; notice = ''; }
   else if (act === 'role') { mode = b.dataset.id === 'admin' ? 'admin' : 'login'; notice = ''; }
   else if (act === 'nav') go(b.dataset.id);
@@ -414,14 +484,15 @@ document.addEventListener('click', async e => {
   else if (act === 'restoreMedia') { const rm = await tx('readonly', s=>s.get(id)); if (rm) { delete rm.deleted; await tx('readwrite', s=>s.put(rm)); } }
   else if (act === 'purgeMedia') { if (!confirm('Delete this file forever? This cannot be undone.')) return; await tx('readwrite', s=>s.delete(id)); }
   else if (act === 'mon') { const n = shiftMonth(adminMonth, id); if (n >= START && n <= cur) adminMonth = n; }
+  else if (act === 'viewPhoto') { viewMediaId = id; go('photo'); }
   else if (act === 'open') { viewId = id; go('member'); }
   else if (act === 'payFor') { last = {userId:String(id), month:cur}; go('payments'); }
   else if (act === 'backup') {
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify({app:'hail-mary', saved:new Date().toISOString(), users, pays, anns, pin, marks, bin})],{type:'application/json'}));
     a.download = 'hail-mary-backup.json'; a.click(); return;
   }
-  else if (act === 'back') { reveal = false; if (hist.length) page = hist.pop(); }
-  else if (act === 'logout') { reveal = false; session = null; page = null; hist = []; mode = 'login'; sessionStorage.removeItem('hm_session'); }
+  else if (act === 'back') { reveal = false; menuOpen = false; if (hist.length) page = hist.pop(); }
+  else if (act === 'logout') { reveal = false; menuOpen = false; session = null; page = null; hist = []; mode = 'login'; sessionStorage.removeItem('hm_session'); }
   else if (act === 'yr') yr = Math.max(+START.slice(0,4), yr + id);
   else if (act === 'delPay') { if (!confirm('Delete this payment record? You can restore it from Deleted items.')) return; const dp = pays.find(x=>x.id===id); if (dp) toBin('pay', dp); pays = pays.filter(p=>p.id!==id); save(); }
   else if (act === 'delAnn') { if (!confirm('Delete this post? You can restore it from Deleted items.')) return; const da = anns.find(x=>x.id===id); if (da) toBin('ann', da); anns = anns.filter(a=>a.id!==id); save(); }
