@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CLASS OF VALEDICTORIANS</title>
+<title>Class of Valedictorians ’21</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#12233f;--paper:#f6f4ee;--card:#fff;--blue:#2d5b9a;--blue-dark:#214577;--gold:#c9972b;--line:#ddd8cb;--muted:#5f6670;--danger:#b3261e;--green:#1f7a4d;--display:'Bricolage Grotesque','Segoe UI',sans-serif;--body:'Public Sans','Segoe UI',sans-serif}
@@ -29,9 +29,9 @@ button.danger{color:var(--danger)}
 .empty,.hint{color:var(--muted);margin:0}
 .hint{font-size:.85rem}
 .bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem 1.5rem;padding:.7rem 1.25rem;background:var(--ink);color:#fff}
-.brand{font:800 1.2rem var(--display);letter-spacing:.14em;color:var(--gold)}
-.bar nav{display:flex;gap:.25rem;flex-wrap:wrap;flex:1}
-.bar nav button{background:transparent;color:#d8dfec;padding:.45rem .8rem}
+.brand{font:800 1.1rem/1.15 var(--display);letter-spacing:.03em;color:var(--gold)}
+.bar nav{display:flex;gap:.1rem;flex-wrap:wrap;flex:1}
+.bar nav button{background:transparent;color:#d8dfec;padding:.45rem .6rem;font-size:.9rem;white-space:nowrap}
 .bar nav button:hover{background:#ffffff1a}
 .bar nav button.on{background:#ffffff26;color:#fff;box-shadow:inset 0 -3px var(--gold)}
 .who{display:flex;align-items:center;gap:.5rem}
@@ -79,7 +79,7 @@ tfoot td{font-weight:600;border-bottom:0}
 .login{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
 .login-hero{background:var(--ink);color:#fff;padding:4rem 3rem;display:flex;flex-direction:column;justify-content:center;gap:1rem}
 .beads{width:min(190px,60%);color:var(--gold)}
-.login-hero h1{font-size:clamp(2.4rem,6vw,4rem);letter-spacing:.1em;margin:0}
+.login-hero h1{font-size:clamp(2rem,5vw,3.2rem);letter-spacing:.02em;line-height:1.1;margin:0}
 .login-hero p{margin:0;max-width:30ch;color:#c9d2e3;font-size:1.1rem}
 .login-form{align-self:center;justify-self:center;width:min(380px,90%);display:grid;gap:1rem;padding:2rem 0}
 .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
@@ -90,6 +90,9 @@ tfoot td{font-weight:600;border-bottom:0}
 @media(max-width:760px){.login{grid-template-columns:1fr}.login-hero{padding:2.5rem 1.5rem}}
 html{-webkit-text-size-adjust:100%}
 .chip{white-space:nowrap}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.gallery figcaption{flex-wrap:wrap}
+.gallery figcaption .link{font-size:.9rem}
 .thumb{display:block;position:relative;width:100%;padding:0;border-radius:0;background:#000}
 .thumb:hover{background:#000}
 .play{position:absolute;left:.5rem;bottom:.5rem;background:#000b;color:#fff;border-radius:99px;padding:.1rem .6rem;font-size:.8rem}
@@ -108,7 +111,7 @@ a.btn{display:inline-block;padding:.65rem 1.1rem;border-radius:6px;background:va
   button{padding:.6rem .9rem}
   .bar{position:sticky;top:0;z-index:20;justify-content:flex-start;gap:.6rem;padding:.45rem .9rem}
   .burger{display:flex}
-  .brand{font-size:1.05rem;letter-spacing:.1em}
+  .brand{font-size:.98rem;letter-spacing:.02em;flex:1;min-width:0}
   .menu{display:none;flex:0 0 100%;flex-direction:column;align-items:stretch;gap:.5rem;padding:.3rem 0 .4rem}
   .menu.open{display:flex}
   .bar nav{flex-direction:column;gap:.15rem;flex:none}
@@ -131,36 +134,35 @@ a.btn{display:inline-block;padding:.65rem 1.1rem;border-radius:6px;background:va
   .big .amt{font-size:2rem}
   .login-hero{padding:1.25rem 1rem;gap:.5rem}
   .beads{width:64px}
-  .login-hero h1{font-size:1.9rem}
+  .login-hero h1{font-size:1.7rem}
   .login-hero p{font-size:.95rem}
   .login-form{padding:1.25rem 0 2rem;gap:.8rem}
 }
+.setup{max-width:520px;margin:12vh auto 0;padding:1.5rem;background:#fff;border:1px solid var(--line);border-radius:8px}
+.loading{padding:3rem 1rem;text-align:center;color:var(--muted)}
 </style>
 </head>
 <body>
 <div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script>
-/* ===== data: records in localStorage, photos and videos in IndexedDB ===== */
+/* ===== 1. FILL THESE IN (see the setup steps) ===== */
+const SUPABASE_URL = 'https://knwggxqejstqitnpqtag.supabase.co/rest/v1/';      // looks like https://abcdefgh.supabase.co
+const SUPABASE_KEY = 'sb_publishable_OKIQeZ9GbMbQOrj5JPeo-A_OOPSfsCA';  // the "anon public" (or "publishable") key. NEVER put the secret / service_role key here.
+const ADMIN_EMAIL  = 'emmanuelarthur9038@gmail.com';       // the email you gave the admin user in Supabase
+const EMAIL_DOMAIN = 'members.valedictorians21.app';     // each member's phone number becomes a private login name like 0241234567@members.valedictorians21.app
+const BUCKET = 'event-media';
+
+/* ===== 2. Site settings ===== */
 const FEE = 20;
 const PAY_NUMBER = '0508697114', PAY_NAME = 'SAMUEL KWAME AGBO'; // the number that receives members' payments (shown on every member's dashboard)
-const ADMIN_PW = 'HailMary123!'; // the administrator signs in with this password only (change it here and reopen the page to reset it)
-const START = '2026-11'; // dues start in NOVEMBER 2026
+const START = '2026-10'; // dues start in October 2026
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const LS = { get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
 const ym = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
 const cur = ym(new Date());
 const from = u => u.joined > START ? u.joined : START;                      // first month a member owes
 const shiftMonth = (m, n) => { const [y,mo] = m.split('-').map(Number); return ym(new Date(y, mo-1+n, 1)); };
-let users = LS.get('hm_users', null);
-if (!users) { users = [{id:1,name:'Administrator',phone:'0000000000',pw:ADMIN_PW,role:'ADMIN',joined:cur}]; LS.set('hm_users', users); }
-let pays = LS.get('hm_pays', []), anns = LS.get('hm_anns', []), pin = LS.get('hm_pin', ''), marks = LS.get('hm_marks', []), bin = LS.get('hm_bin', []);
-let session = JSON.parse(sessionStorage.getItem('hm_session') || 'null');
-let page = null, hist = [], mode = 'login', notice = '', reveal = false, viewId = null, adminMonth = cur, fails = 0, lockUntil = 0, menuOpen = false, shownPage = null, viewMediaId = null, yr = new Date().getFullYear(), filter = '', last = {userId:'', month:cur}, urls = [];
-const save = () => { LS.set('hm_users', users); LS.set('hm_pays', pays); LS.set('hm_anns', anns); LS.set('hm_pin', pin); LS.set('hm_marks', marks); LS.set('hm_bin', bin); };
-const nextId = l => l.reduce((m,x)=>Math.max(m,x.id),0) + 1;
-const toBin = (kind, item) => bin.push({bid: bin.reduce((m,x)=>Math.max(m,x.bid),0) + 1, kind, item, at: Date.now()});
-const isMarked = (uid, m) => marks.some(x=>x.userId===uid && x.month===m);
 const cedis = n => 'GH₵' + Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
 const monthLabel = m => { const [y,mo]=m.split('-'); return new Date(y,mo-1,1).toLocaleDateString(undefined,{month:'long',year:'numeric'}); };
 const shortMonth = i => new Date(2000,i,1).toLocaleDateString(undefined,{month:'short'});
@@ -168,21 +170,52 @@ const dateLabel = d => new Date(d+'T00:00:00').toLocaleDateString(undefined,{day
 const nameOf = id => (users.find(u=>u.id===id)||{name:'(removed member)'}).name;
 const paidFor = (uid,m) => pays.filter(p=>p.userId===uid&&p.month===m).reduce((s,p)=>s+p.amount,0);
 const normPhone = p => { p = p.replace(/[^\d+]/g,''); if (p.startsWith('+233')) p = '0' + p.slice(4); else if (/^233\d{9}$/.test(p)) p = '0' + p.slice(3); else if (/^\d{9}$/.test(p)) p = '0' + p; return /^0\d{9}$/.test(p) ? p : null; };
-
-const hex = b => [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
-const hashPw = async (pw, salt) => (window.crypto && crypto.subtle) ? hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + pw))) : pw;
-const setPw = async (u, pw) => { u.salt = hex(crypto.getRandomValues(new Uint8Array(12))); u.pw = await hashPw(pw, u.salt); delete u.defaultPw; };
-const checkPw = async (u, pw) => u.salt ? (await hashPw(pw, u.salt)) === u.pw : u.pw === pw;
 const mask = p => reveal ? p : p.slice(0,3) + '••••' + p.slice(-3);
+const isMarked = (uid, m) => marks.some(x=>x.userId===uid && x.month===m);
+const emailFor = phone => phone + '@' + EMAIL_DOMAIN;
+const newId = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
 
-const db = new Promise((res,rej)=>{ const r=indexedDB.open('hm_media',1);
-  r.onupgradeneeded=()=>r.result.createObjectStore('media',{keyPath:'id',autoIncrement:true});
-  r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); });
-const tx = async (mode, fn) => { const d = await db; return new Promise((res,rej)=>{
-  const t=d.transaction('media',mode); const q=fn(t.objectStore('media'));
-  t.oncomplete=()=>res(q&&q.result); t.onerror=()=>rej(t.error); }); };
-const allMedia = async () => (await tx('readonly', s=>s.getAll())).filter(m=>!m.deleted).sort((a,b)=>b.at-a.at);
-const deletedMedia = async () => (await tx('readonly', s=>s.getAll())).filter(m=>m.deleted).sort((a,b)=>b.deleted-a.deleted);
+/* ===== database connection ===== */
+const configured = !!window.supabase && SUPABASE_URL.startsWith('http') && !SUPABASE_KEY.startsWith('PASTE') && !ADMIN_EMAIL.startsWith('PASTE');
+const sb = configured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { storage: window.sessionStorage, persistSession: true, autoRefreshToken: true } }) : null;
+
+let users = [], pays = [], anns = [], marks = [], bin = [], pin = '', mediaList = null, binMedia = [];
+let session = null, page = null, hist = [], mode = 'login', notice = '', reveal = false, viewId = null, adminMonth = cur, fails = 0, lockUntil = 0, menuOpen = false, shownPage = null, viewMediaId = null, yr = new Date().getFullYear(), filter = '', last = {userId:'', month:cur};
+
+async function must(p) { const r = await p; if (r.error) throw r.error; return r.data; }
+async function fetchAll(table) {            // reads every row, 1000 at a time
+  const out = [];
+  for (let offset = 0; ; offset += 1000) {
+    const rows = await must(sb.from(table).select('*').order('id').range(offset, offset + 999));
+    out.push(...rows); if (rows.length < 1000) return out;
+  }
+}
+async function loadData() {
+  const [pr, pa, an, mk, st] = await Promise.all([fetchAll('profiles'), fetchAll('payments'), fetchAll('announcements'), fetchAll('marks'), must(sb.from('settings').select('*').eq('key', 'pin'))]);
+  users = pr.map(p => ({id:p.id, name:p.full_name || 'Administrator', phone:p.phone || '', role:String(p.role).toUpperCase(), joined:p.joined}));
+  const P = pa.map(p => ({id:p.id, userId:p.user_id, month:p.month, amount:Number(p.amount), note:p.note || '', at:Date.parse(p.created_at), del:p.deleted_at ? Date.parse(p.deleted_at) : 0}));
+  const A = an.map(a => ({id:a.id, title:a.title, body:a.body || '', date:a.event_date || '', at:Date.parse(a.created_at), del:a.deleted_at ? Date.parse(a.deleted_at) : 0}));
+  pays = P.filter(p=>!p.del); anns = A.filter(a=>!a.del);
+  bin = [...P.filter(p=>p.del).map(p=>({bid:'pay-'+p.id, kind:'pay', item:p, at:p.del})), ...A.filter(a=>a.del).map(a=>({bid:'ann-'+a.id, kind:'ann', item:a, at:a.del}))];
+  marks = mk.map(m => ({id:m.id, userId:m.user_id, month:m.month}));
+  pin = st.length ? st[0].value : '';
+}
+async function loadMedia(deleted) {          // photos and videos, with temporary links
+  const items = (await fetchAll('media')).filter(m => !!m.deleted_at === deleted)
+    .map(m => ({id:m.id, title:m.title, path:m.path, type:m.content_type, name:m.file_name, at:Date.parse(m.created_at), deleted:m.deleted_at ? Date.parse(m.deleted_at) : 0}));
+  if (items.length) {
+    const signed = await must(sb.storage.from(BUCKET).createSignedUrls(items.map(m=>m.path), 3600));
+    const byPath = Object.fromEntries(signed.map(x => [x.path, x.signedUrl]));
+    items.forEach(m => { m.url = byPath[m.path] || ''; });
+  }
+  return items.sort((a,b) => deleted ? b.deleted - a.deleted : b.at - a.at);
+}
+const profileOf = user => must(sb.from('profiles').select('*').eq('id', user.id).single());
+async function begin(user, prof) {
+  session = {id:user.id, email:user.email, name:prof.full_name || 'Administrator', role:String(prof.role).toUpperCase()};
+  hist = []; notice = ''; page = 'dashboard'; mediaList = null; menuOpen = false;
+  await loadData();
+}
 
 /* ===== navigation (with Back) ===== */
 const go = p => { reveal = false; menuOpen = false; if (p !== page) { if (page) hist.push(page); page = p; } };
@@ -191,6 +224,7 @@ const NAV = {
   ADMIN:  [['dashboard','Dashboard'],['payments','Payments'],['members','Members'],['events','Events & Announcements'],['photos','Photos & Videos'],['trash','Deleted items']]
 };
 
+
 /* ===== views ===== */
 const beads = () => { let c=''; for (let i=0;i<15;i++){ const a=i/15*2*Math.PI; c+=`<circle cx="${(100+70*Math.sin(a)).toFixed(1)}" cy="${(90-70*Math.cos(a)).toFixed(1)}" r="6" fill="currentColor"/>`; }
   return `<svg class="beads" viewBox="0 0 200 230" aria-hidden="true">${c}<path d="M100 160v52M80 182h40" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>`; };
@@ -198,7 +232,7 @@ const beads = () => { let c=''; for (let i=0;i<15;i++){ const a=i/15*2*Math.PI; 
 const loginView = () => {
   const admin = mode === 'admin', setting = mode === 'signup' || mode === 'forgot';
   const title = {login:'Member sign-in', signup:'Create your account', forgot:'Reset your password', admin:'Admin sign-in'}[mode];
-  return `<div class="login"><section class="login-hero">${beads()}${admin?'<span class="badge">ADMIN SPACE</span>':''}<h1>HAIL MARY</h1><p>${admin?'Sign in to manage members, payments, events and announcements.':'Keep track of your monthly dues, events and announcements.'}</p></section>
+  return `<div class="login"><section class="login-hero">${beads()}${admin?'<span class="badge">ADMIN SPACE</span>':''}<h1>Class of Valedictorians ’21</h1><p>${admin?'Sign in to manage members, payments, events and announcements.':'Keep track of your monthly dues, events and announcements.'}</p></section>
 <form class="login-form" id="${admin?'adminLogin':mode}">
 <div class="seg"><button type="button" class="${admin?'':'on'}" data-act="role" data-id="member">Member</button><button type="button" class="${admin?'on':''}" data-act="role" data-id="admin">Admin</button></div>
 <h2>${title}</h2>
@@ -214,20 +248,35 @@ ${admin?'':`<button type="button" class="link" data-act="mode" data-id="${mode==
 ${admin?'<p class="hint">Enter the administrator password. Members use the Member tab.</p>':''}
 ${mode==='forgot'?'<p class="hint">Enter the full name and phone number you used to create your account, then choose a new password.</p>':''}</form></div>`; };
 
-const header = () => `<header class="bar"><button class="burger" data-act="menu" aria-label="Menu" aria-expanded="${menuOpen}"><span></span><span></span><span></span></button><div class="brand">HAIL MARY</div>
+const header = () => `<header class="bar"><button class="burger" data-act="menu" aria-label="Menu" aria-expanded="${menuOpen}"><span></span><span></span><span></span></button><div class="brand">Class of Valedictorians ’21</div>
 <div class="menu${menuOpen?' open':''}"><nav>${NAV[session.role].map(([id,l])=>`<button class="${page===id||(id==='members'&&page==='member')||(id==='photos'&&page==='photo')?'on':''}" data-act="nav" data-id="${id}">${l}</button>`).join('')}</nav>
-<div class="who"><span>${esc(session.name)}</span><button class="ghost" data-act="back"${hist.length?'':' disabled'}>← Back</button><button class="ghost" data-act="logout">Log out</button></div></div></header>`;
+<div class="who"><span>${esc(session.name)}</span><button class="ghost" data-act="retry">Refresh</button><button class="ghost" data-act="back"${hist.length?'':' disabled'}>← Back</button><button class="ghost" data-act="logout">Log out</button></div></div></header>`;
 
 const extOf = t => ({'image/jpeg':'.jpg','image/png':'.png','image/gif':'.gif','image/webp':'.webp','video/mp4':'.mp4','video/webm':'.webm','video/quicktime':'.mov'}[t] || '');
 const fileName = m => m.name || ((m.title || 'file').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-') || 'file') + extOf(m.type);
+const getBlob = m => m.blobP || (m.blobP = fetch(m.url).then(r => { if (!r.ok) throw new Error('Could not load the file.'); return r.blob(); }));
+
+async function downloadMedia(id) {
+  const m = (mediaList || []).find(x=>x.id===id); if (!m) return;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(await getBlob(m)); a.download = fileName(m);
+  document.body.appendChild(a); a.click(); a.remove();
+}
+async function saveToGallery(id) {            // opens the phone's share menu (Save Image / Photos / Gallery); plain download if that is not available
+  const m = (mediaList || []).find(x=>x.id===id); if (!m) return;
+  const file = new File([await getBlob(m)], fileName(m), {type: m.type});
+  try { if (navigator.canShare && navigator.canShare({files:[file]})) { await navigator.share({files:[file], title:m.title}); return; } }
+  catch (err) { if (err && err.name === 'AbortError') return; }
+  await downloadMedia(id);
+  alert('The file was downloaded. Look for it in your Downloads folder or your gallery.');
+}
 
 function gallery(media, admin) {
   if (!media.length) return '<p class="empty">No photos or videos have been uploaded yet.</p>';
-  return `<div class="gallery">${media.map(m => { const u = URL.createObjectURL(m.blob); urls.push(u);
+  return `<div class="gallery">${media.map(m => {
     const vid = m.type.startsWith('video/');
-    const el = vid ? `<video src="${u}" preload="metadata" muted playsinline></video>` : `<img src="${u}" alt="${esc(m.title)}" loading="lazy">`;
+    const el = vid ? `<video src="${m.url}" preload="metadata" muted playsinline></video>` : `<img src="${m.url}" alt="${esc(m.title)}" loading="lazy">`;
     return `<figure><button class="thumb" data-act="viewPhoto" data-id="${m.id}" aria-label="Open ${esc(m.title)}">${el}${vid?'<span class="play">▶ Video</span>':''}</button>
-<figcaption><span>${esc(m.title)}</span><span><a class="dl" href="${u}" download="${esc(fileName(m))}">Download</a>${admin?` &nbsp; <button class="link danger" data-act="delMedia" data-id="${m.id}">Delete</button>`:''}</span></figcaption></figure>`; }).join('')}</div>`;
+<figcaption><span>${esc(m.title)}</span><span><button class="link" data-act="saveGallery" data-id="${m.id}">Save to gallery</button> &nbsp; <button class="link" data-act="download" data-id="${m.id}">Download</button>${admin?` &nbsp; <button class="link danger" data-act="delMedia" data-id="${m.id}">Delete</button>`:''}</span></figcaption></figure>`; }).join('')}</div>`;
 }
 
 const LABEL = {paid:'Paid',partial:'Part paid',due:'Due now',overdue:'Overdue',missed:'Not paid',future:'Upcoming',na:'—'};
@@ -308,18 +357,19 @@ ${admin?`<section class="panel"><h2>Post an announcement or event</h2><form clas
 function photosView(media) {
   const admin = session.role === 'ADMIN';
   return `<h1>Photos & Videos</h1>
-${admin?`<section class="panel"><h2>Upload a photo or video</h2><form class="grid" id="upload"><label>Title<input name="title" required></label><label>File<input type="file" name="file" accept="image/*,video/*" required></label><button>Upload</button></form></section>`:''}
-<section class="panel"><h2>Event photos and videos</h2><p class="hint">Tap a photo or video to open it on its own page, where you can download it.</p><br>${gallery(media, admin)}</section>`;
+${admin?`<section class="panel"><h2>Upload a photo or video</h2><p class="hint">Photos and videos up to 50 MB each.</p><br><form class="grid" id="upload"><label>Title<input name="title" required></label><label>File<input type="file" name="file" accept="image/*,video/*" required></label><button>Upload</button></form></section>`:''}
+<section class="panel"><h2>Event photos and videos</h2><p class="hint">Tap a photo or video to open it on its own page, where you can save it to your phone’s gallery.</p><br>${gallery(media, admin)}</section>`;
 }
 
-function photoView(m) {
-  if (!m || m.deleted) return `<p><button class="pale" data-act="nav" data-id="photos">← All photos</button></p><h1>Not found</h1><p class="empty">That file is no longer available.</p>`;
-  const u = URL.createObjectURL(m.blob); urls.push(u);
-  const el = m.type.startsWith('video/') ? `<video src="${u}" controls playsinline></video>` : `<img src="${u}" alt="${esc(m.title)}">`;
-  return `<p><button class="pale" data-act="nav" data-id="photos">← All photos</button></p>
-<section class="panel"><h2>${esc(m.title)}</h2><div class="viewer">${el}</div>
-<div class="actions" style="margin-top:1rem"><a class="btn" href="${u}" download="${esc(fileName(m))}">Download</a><span class="hint">${new Date(m.at).toLocaleDateString()}</span></div>
-<p class="hint" style="margin-top:.6rem">If the file opens instead of saving, press and hold it, then choose Save or Download.</p></section>`;
+function photoView() {
+  const m = (mediaList || []).find(x => x.id === viewMediaId);
+  const back = `<p><button class="pale" data-act="nav" data-id="photos">← All photos</button></p>`;
+  if (!m) return back + `<h1>Not found</h1><p class="empty">That file is no longer available.</p>`;
+  if (!m.type.startsWith('video/')) getBlob(m).catch(() => {});   // get the photo ready so Save works quickly
+  const el = m.type.startsWith('video/') ? `<video src="${m.url}" controls playsinline></video>` : `<img src="${m.url}" alt="${esc(m.title)}">`;
+  return back + `<section class="panel"><h2>${esc(m.title)}</h2><div class="viewer">${el}</div>
+<div class="actions" style="margin-top:1rem"><button data-act="saveGallery" data-id="${m.id}">Save to gallery</button><button class="pale" data-act="download" data-id="${m.id}">Download file</button><span class="hint">${new Date(m.at).toLocaleDateString()}</span></div>
+<p class="hint" style="margin-top:.6rem">Save to gallery opens your phone’s share menu: choose Save Image, Photos or Gallery. If the menu does not open, the file is downloaded to your phone instead.</p></section>`;
 }
 
 function paymentsView() {
@@ -340,11 +390,7 @@ ${rows.length?`<div class="scroll"><table><thead><tr><th>Member</th><th>Month</t
 function membersView() {
   const members = users.filter(u=>u.role==='MEMBER').sort((a,b)=>a.name.localeCompare(b.name));
   return `<h1>Members</h1><section class="panel"><div class="panel-head"><h2>${members.length} member${members.length===1?'':'s'}</h2><button class="pale" data-act="reveal">${reveal?'Hide':'Show'} phone numbers</button></div>
-${members.length?`<div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Joined</th><th></th></tr></thead><tbody>${members.map(m=>`<tr><td><button class="link" data-act="open" data-id="${m.id}">${esc(m.name)}</button></td><td>${esc(mask(m.phone))}</td><td>${monthLabel(m.joined)}</td><td><button class="link" data-act="open" data-id="${m.id}">View records</button> &nbsp; <button class="link danger" data-act="delMember" data-id="${m.id}">Remove</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No one has created an account yet. Members sign up themselves from the sign-in page.</p>'}</section>
-<section class="panel"><h2>Database backup</h2><p class="hint">Saves all members, payments and announcements to a file you can keep safe or move to another computer. Photos and videos are not included. Keep the file private.</p><br>
-<div class="actions"><button data-act="backup">Download backup</button></div><br>
-<form class="grid" id="restore"><label>Restore from a backup file<input type="file" name="file" accept=".json,application/json" required></label><button class="pale">Restore backup</button></form>
-<p class="error" id="err" role="alert" hidden></p></section>`;
+${members.length?`<div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Joined</th><th></th></tr></thead><tbody>${members.map(m=>`<tr><td><button class="link" data-act="open" data-id="${m.id}">${esc(m.name)}</button></td><td>${esc(mask(m.phone))}</td><td>${monthLabel(m.joined)}</td><td><button class="link" data-act="open" data-id="${m.id}">View records</button> &nbsp; <button class="link danger" data-act="delMember" data-id="${m.id}">Remove</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No one has created an account yet. Members sign up themselves from the sign-in page.</p>'}</section>`;
 }
 
 function memberView() {
@@ -365,7 +411,7 @@ function trashView(binMedia) {
   return `<h1>Deleted items</h1><p class="hint">Deleted payments, events and photos wait here until you delete them forever.</p><br>
 <section class="panel"><h2>Payments</h2>${pb.length?`<div class="scroll"><table><thead><tr><th>Member</th><th>Month</th><th class="num">Amount</th><th>Deleted on</th><th></th></tr></thead><tbody>${pb.map(x=>`<tr><td>${esc(nameOf(x.item.userId))}</td><td>${monthLabel(x.item.month)}</td><td class="num">${cedis(x.item.amount)}</td><td>${when(x.at)}</td><td>${actions(x.bid)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No deleted payments.</p>'}</section>
 <section class="panel"><h2>Events and announcements</h2>${ab.length?ab.map(x=>`<article class="ann">${x.item.date?`<span class="chip due">${dateLabel(x.item.date)}</span>`:''}<h3>${esc(x.item.title)}</h3><p>${esc(x.item.body)}</p><p class="hint">Deleted on ${when(x.at)}</p>${actions(x.bid)}</article>`).join(''):'<p class="empty">No deleted events or announcements.</p>'}</section>
-<section class="panel"><h2>Photos and videos</h2>${binMedia.length?`<div class="gallery">${binMedia.map(m=>{ const u = URL.createObjectURL(m.blob); urls.push(u);
+<section class="panel"><h2>Photos and videos</h2>${binMedia.length?`<div class="gallery">${binMedia.map(m=>{ const u = m.url;
   const el = m.type.startsWith('video/') ? `<video src="${u}" controls preload="metadata"></video>` : `<img src="${u}" alt="${esc(m.title)}">`;
   return `<figure>${el}<figcaption><span>${esc(m.title)}</span><span><button class="link" data-act="restoreMedia" data-id="${m.id}">Restore</button> <button class="link danger" data-act="purgeMedia" data-id="${m.id}">Forever</button></span></figcaption></figure>`; }).join('')}</div>`:'<p class="empty">No deleted photos or videos.</p>'}</section>`;
 }
@@ -379,84 +425,98 @@ function accountView() {
 <section class="panel"><div class="panel-head"><h2>Your details</h2><button class="pale" data-act="reveal">${reveal?'Hide':'Show'} phone number</button></div><p>${esc(u.name)}<br>${esc(mask(u.phone))}</p></section>`;
 }
 
+const setupView = () => `<div class="setup"><h2>Almost ready</h2><p>${window.supabase ? 'The database details have not been filled in yet.' : 'The database library could not load. Check your internet connection and refresh the page.'}</p>
+<p class="hint">Open this file in a text editor and fill in SUPABASE_URL, SUPABASE_KEY and ADMIN_EMAIL at the top of the script.</p></div>`;
+const friendly = e => /fetch|network|failed to/i.test(String((e && e.message) || '')) ? 'Could not reach the database. Check your internet connection and try again.' : ((e && e.message) || 'Something went wrong. Please try again.');
+const showError = m => { const e = $('#err'); if (e) { e.textContent = m; e.hidden = false; } else alert(m); };
+const stamp = () => new Date().toISOString();
+
 async function render() {
-  urls.forEach(u=>URL.revokeObjectURL(u)); urls = [];
+  if (!configured) { $('#app').innerHTML = setupView(); return; }
   if (!session) { $('#app').innerHTML = loginView(); return; }
-  const media = page === 'photos' ? await allMedia() : [];
-  const one = page === 'photo' ? await tx('readonly', s=>s.get(viewMediaId)) : null;
-  const binned = page === 'trash' ? await deletedMedia() : [];
-  const views = { dashboard:()=>session.role==='ADMIN'?adminDashboardView():dashboardView(), records:recordsView, current:currentView, events:eventsView, photos:()=>photosView(media), photo:()=>photoView(one), payments:paymentsView, members:membersView, member:memberView, account:accountView, trash:()=>trashView(binned) };
-  $('#app').innerHTML = header() + `<main class="page">${views[page]()}</main>`;
+  try {
+    if (page === 'photos' || (page === 'photo' && !mediaList)) mediaList = await loadMedia(false);
+    if (page === 'trash') binMedia = await loadMedia(true);
+  } catch (err) {
+    $('#app').innerHTML = header() + `<main class="page"><div class="panel"><h2>Could not load</h2><p class="error">${esc(friendly(err))}</p><button data-act="retry">Try again</button></div></main>`; return;
+  }
+  const views = { dashboard:()=>session.role==='ADMIN'?adminDashboardView():dashboardView(), records:recordsView, current:currentView, events:eventsView,
+    photos:()=>photosView(mediaList || []), photo:photoView, payments:paymentsView, members:membersView, member:memberView, account:accountView, trash:()=>trashView(binMedia) };
+  $('#app').innerHTML = header() + `<main class="page">${(views[page] || views.dashboard)()}</main>`;
   if (page !== shownPage) { shownPage = page; if (window.scrollTo) window.scrollTo(0, 0); }
 }
-const showError = m => { const e = $('#err'); if (e) { e.textContent = m; e.hidden = false; } };
-const signIn = u => { session = {id:u.id, name:u.name, role:u.role}; sessionStorage.setItem('hm_session', JSON.stringify(session)); hist = []; notice = ''; page = 'dashboard'; };
 
 /* ===== actions ===== */
 document.addEventListener('submit', async e => {
-  e.preventDefault(); const f = e.target, d = Object.fromEntries(new FormData(f));
-  if (f.id === 'adminLogin') {
-    if (Date.now() < lockUntil) return showError('Too many wrong attempts. Please wait 30 seconds and try again.');
-    const adm = users.find(x=>x.role==='ADMIN');
-    if (!adm || !(await checkPw(adm, d.pw))) { if (++fails >= 5) { lockUntil = Date.now() + 30000; fails = 0; } return showError('Wrong admin password.'); }
-    fails = 0; signIn(adm);
-  } else if (f.id === 'login') {
-    const phone = normPhone(d.phone);
-    if (!phone) return showError('Enter a valid 10-digit phone number');
-    const acct = users.find(x=>x.phone===phone);
-    if (!acct) return showError('No account was found for that phone number. Check the number, or create an account.');
-    if (!(await checkPw(acct, d.pw))) return showError(f.id === 'login' ? 'Wrong password. Try again, or use "Forgot your password?"' : 'Wrong password. Try again.');
-    if (f.id === 'adminLogin' && acct.role !== 'ADMIN') return showError('That account is not an administrator. Members sign in on the Member tab.');
-    if (f.id === 'login' && acct.role === 'ADMIN') return showError('Administrators sign in on the Admin tab.');
-    if (!acct.salt) { const keep = acct.defaultPw; await setPw(acct, d.pw); if (keep) acct.defaultPw = true; save(); }
-    signIn(acct);
-  } else if (f.id === 'forgot') {
-    const phone = normPhone(d.phone), acct = phone && users.find(x=>x.phone===phone);
-    const same = t => t.trim().replace(/\s+/g,' ').toLowerCase();
-    if (!acct || acct.role === 'ADMIN' || same(acct.name) !== same(d.name)) return showError('We could not match that full name and phone number to a member account.');
-    await setPw(acct, d.pw); save(); mode = 'login'; notice = 'Your password has been changed. Sign in with the new password.';
-  } else if (f.id === 'signup') {
-    const phone = normPhone(d.phone);
-    if (!phone) return showError('Enter a valid 10-digit phone number');
-    if (users.some(x=>x.phone===phone)) return showError('That phone number already has an account');
-    const u = {id:nextId(users), name:d.name.trim().replace(/\s+/g,' '), phone, role:'MEMBER', joined:cur};
-    await setPw(u, d.pw); users.push(u); save(); signIn(u);
-  } else if (f.id === 'pin') {
-    pin = d.msg.trim(); save();
-  } else if (f.id === 'markForm') {
-    const uid = Number(d.userId), mu = users.find(x=>x.id===uid);
-    if (!mu || d.month < from(mu) || d.month > cur) return showError('Choose a month from ' + monthLabel(from(mu || {joined:START})) + ' to ' + monthLabel(cur) + '.');
-    if (paidFor(uid, d.month) > 0) return showError('That month already has a payment recorded.');
-    if (!isMarked(uid, d.month)) { marks.push({id:nextId(marks), userId:uid, month:d.month, at:Date.now()}); save(); }
-  } else if (f.id === 'chPw') {
-    const me = users.find(x=>x.id===session.id);
-    if (!(await checkPw(me, d.old))) return showError('Your current password is not correct.');
-    await setPw(me, d.pw); save(); alert('Your password has been changed.');
-  } else if (f.id === 'restore') {
-    let data; try { data = JSON.parse(await f.file.files[0].text()); } catch { return showError('That file is not a valid backup.'); }
-    if (!data || !Array.isArray(data.users) || !Array.isArray(data.pays) || !Array.isArray(data.anns) || !data.users.some(u=>u.role==='ADMIN')) return showError('That file is not a valid HAIL MARY backup.');
-    if (!confirm('Replace all current records with this backup?')) return;
-    users = data.users; pays = data.pays; anns = data.anns; pin = typeof data.pin === 'string' ? data.pin : ''; marks = Array.isArray(data.marks) ? data.marks : []; bin = Array.isArray(data.bin) ? data.bin : []; save();
-    if (!users.some(u=>u.id===session.id)) { session = null; page = null; sessionStorage.removeItem('hm_session'); }
-  } else if (f.id === 'addPay') {
-    const prior = paidFor(Number(d.userId), d.month);
-    if (prior > 0 && !confirm(nameOf(Number(d.userId)) + ' already has ' + cedis(prior) + ' recorded for ' + monthLabel(d.month)
-        + (prior >= FEE ? ' (fully paid).' : ', and still owes ' + cedis(FEE - prior) + '.')
-        + '\n\nDo you want to add another payment of ' + cedis(d.amount) + ' for the same month?')) return;
-    last = {userId:d.userId, month:d.month};
-    pays.push({id:nextId(pays), userId:Number(d.userId), month:d.month, amount:Number(d.amount), note:d.note.trim(), at:Date.now()});
-    marks = marks.filter(x=>!(x.userId===Number(d.userId) && x.month===d.month)); save();
-  } else if (f.id === 'addAnn') {
-    anns.push({id:nextId(anns), title:d.title.trim(), date:d.date, body:d.body.trim(), at:Date.now()}); save();
-  } else if (f.id === 'upload') {
-    const file = f.file.files[0];
-    await tx('readwrite', s => s.add({title:d.title.trim(), type:file.type, blob:file, name:file.name, at:Date.now()}));
-  }
+  e.preventDefault(); const f = e.target, d = Object.fromEntries(new FormData(f)), btn = f.querySelector('button:not([type=button])');
+  const fail = m => { if (m) showError(m); if (btn) btn.disabled = false; };
+  if (btn) btn.disabled = true;
+  let reload = false;
+  try {
+    if (f.id === 'adminLogin') {
+      if (Date.now() < lockUntil) return fail('Too many wrong attempts. Please wait 30 seconds and try again.');
+      const r = await sb.auth.signInWithPassword({email: ADMIN_EMAIL, password: d.pw});
+      if (r.error) { if (++fails >= 5) { lockUntil = Date.now() + 30000; fails = 0; } return fail(/credentials/i.test(r.error.message) ? 'Wrong admin password.' : friendly(r.error)); }
+      const prof = await profileOf(r.data.user);
+      if (prof.role !== 'admin') { await sb.auth.signOut(); return fail('That account is not an administrator.'); }
+      fails = 0; await begin(r.data.user, prof);
+    } else if (f.id === 'login') {
+      const phone = normPhone(d.phone); if (!phone) return fail('Enter a valid 10-digit phone number');
+      const r = await sb.auth.signInWithPassword({email: emailFor(phone), password: d.pw});
+      if (r.error) return fail(/credentials/i.test(r.error.message) ? 'Wrong phone number or password. Try again, or use "Forgot your password?"' : friendly(r.error));
+      const prof = await profileOf(r.data.user);
+      if (prof.role === 'admin') { await sb.auth.signOut(); return fail('Administrators sign in on the Admin tab.'); }
+      await begin(r.data.user, prof);
+    } else if (f.id === 'signup') {
+      const phone = normPhone(d.phone); if (!phone) return fail('Enter a valid 10-digit phone number');
+      const name = d.name.trim().replace(/\s+/g,' ');
+      const r = await sb.auth.signUp({email: emailFor(phone), password: d.pw, options: {data: {full_name: name, phone}}});
+      if (r.error) return fail(/already|registered/i.test(r.error.message) ? 'That phone number already has an account' : friendly(r.error));
+      if (!r.data.session) return fail('Your account was created, but the site still asks for email confirmation. The admin must switch off "Confirm email" in Supabase (Authentication, Providers, Email).');
+      await begin(r.data.user, await profileOf(r.data.user));
+    } else if (f.id === 'forgot') {
+      const phone = normPhone(d.phone); if (!phone) return fail('Enter a valid 10-digit phone number');
+      const ok = await must(sb.rpc('reset_member_password', {p_phone: phone, p_name: d.name, p_password: d.pw}));
+      if (!ok) return fail('We could not match that full name and phone number to a member account.');
+      mode = 'login'; notice = 'Your password has been changed. Sign in with the new password.';
+    } else if (f.id === 'addPay') {
+      const prior = paidFor(d.userId, d.month);
+      if (prior > 0 && !confirm(nameOf(d.userId) + ' already has ' + cedis(prior) + ' recorded for ' + monthLabel(d.month)
+          + (prior >= FEE ? ' (fully paid).' : ', and still owes ' + cedis(FEE - prior) + '.')
+          + '\n\nDo you want to add another payment of ' + cedis(d.amount) + ' for the same month?')) return fail();
+      last = {userId:d.userId, month:d.month};
+      await must(sb.from('payments').insert({user_id:d.userId, month:d.month, amount:Number(d.amount), note:d.note.trim()}));
+      await sb.from('marks').delete().eq('user_id', d.userId).eq('month', d.month);
+      reload = true;
+    } else if (f.id === 'markForm') {
+      const mu = users.find(x=>x.id===d.userId);
+      if (!mu || d.month < from(mu) || d.month > cur) return fail('Choose a month from ' + monthLabel(from(mu || {joined:START})) + ' to ' + monthLabel(cur) + '.');
+      if (paidFor(d.userId, d.month) > 0) return fail('That month already has a payment recorded.');
+      if (!isMarked(d.userId, d.month)) await must(sb.from('marks').insert({user_id:d.userId, month:d.month}));
+      reload = true;
+    } else if (f.id === 'addAnn') {
+      await must(sb.from('announcements').insert({title:d.title.trim(), body:d.body.trim(), event_date:d.date || null})); reload = true;
+    } else if (f.id === 'pin') {
+      await must(sb.from('settings').upsert({key:'pin', value:d.msg.trim()})); reload = true;
+    } else if (f.id === 'chPw') {
+      const chk = await sb.auth.signInWithPassword({email: session.email, password: d.old});
+      if (chk.error) return fail('Your current password is not correct.');
+      await must(sb.auth.updateUser({password: d.pw})); alert('Your password has been changed.');
+    } else if (f.id === 'upload') {
+      const file = f.file.files[0], ext = (file.name.match(/\.[A-Za-z0-9]+$/) || [''])[0].toLowerCase(), path = newId() + ext;
+      await must(sb.storage.from(BUCKET).upload(path, file, {contentType: file.type}));
+      const r = await sb.from('media').insert({title:d.title.trim(), path, content_type:file.type, file_name:file.name});
+      if (r.error) { await sb.storage.from(BUCKET).remove([path]); throw r.error; }
+      reload = true;
+    }
+    if (reload) await loadData();
+  } catch (err) { return fail(friendly(err)); }
   render();
 });
+
 function dupNotice() {
   const f = $('#addPay'), w = $('#dupWarn'); if (!f || !w) return;
-  const uid = Number(f.userId.value), mo = f.month.value, ex = uid && mo ? paidFor(uid, mo) : 0;
+  const uid = f.userId.value, mo = f.month.value, ex = uid && mo ? paidFor(uid, mo) : 0;
   w.hidden = !ex;
   if (ex) w.textContent = 'Heads up: ' + nameOf(uid) + ' already has ' + cedis(ex) + ' recorded for ' + monthLabel(mo) + (ex >= FEE ? ' (fully paid).' : ', and still owes ' + cedis(FEE - ex) + '.');
 }
@@ -464,55 +524,63 @@ document.addEventListener('change', e => {
   if (e.target.id === 'filter') { filter = e.target.value; render(); }
   else if (e.target.form && e.target.form.id === 'addPay') dupNotice();
 });
+
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
-  const act = b.dataset.act, id = Number(b.dataset.id);
-  if (act === 'menu') { menuOpen = !menuOpen; const mn = document.querySelector('.menu'); if (mn) mn.classList.toggle('open', menuOpen); b.setAttribute('aria-expanded', String(menuOpen)); return; }
-  else if (act === 'showpw') { $('#pw').type = b.checked ? 'text' : 'password'; return; }
-  else if (act === 'mode') { mode = b.dataset.id; notice = ''; }
-  else if (act === 'role') { mode = b.dataset.id === 'admin' ? 'admin' : 'login'; notice = ''; }
-  else if (act === 'nav') go(b.dataset.id);
-  else if (act === 'reveal') reveal = !reveal;
-  else if (act === 'copy') { try { await navigator.clipboard.writeText(PAY_NUMBER); alert('Number copied.'); } catch { alert('Could not copy automatically. The number is ' + PAY_NUMBER); } return; }
-  else if (act === 'clearPin') { pin = ''; save(); }
-  else if (act === 'markNot') { const mm = b.dataset.m; if (paidFor(id, mm) > 0) return alert('That month already has a payment recorded.'); if (!isMarked(id, mm)) marks.push({id:nextId(marks), userId:id, month:mm, at:Date.now()}); save(); }
-  else if (act === 'clearMark') { marks = marks.filter(x=>!(x.userId===id && x.month===b.dataset.m)); save(); }
-  else if (act === 'restore') { const e2 = bin.find(x=>x.bid===id);
-    if (e2) { if (e2.kind === 'pay') { if (!users.some(u=>u.id===e2.item.userId)) return alert('This member has been removed, so the payment cannot be restored.'); e2.item.id = nextId(pays); pays.push(e2.item); }
-      else { e2.item.id = nextId(anns); anns.push(e2.item); } bin = bin.filter(x=>x.bid!==id); save(); } }
-  else if (act === 'purge') { if (!confirm('Delete this forever? This cannot be undone.')) return; bin = bin.filter(x=>x.bid!==id); save(); }
-  else if (act === 'restoreMedia') { const rm = await tx('readonly', s=>s.get(id)); if (rm) { delete rm.deleted; await tx('readwrite', s=>s.put(rm)); } }
-  else if (act === 'purgeMedia') { if (!confirm('Delete this file forever? This cannot be undone.')) return; await tx('readwrite', s=>s.delete(id)); }
-  else if (act === 'mon') { const n = shiftMonth(adminMonth, id); if (n >= START && n <= cur) adminMonth = n; }
-  else if (act === 'viewPhoto') { viewMediaId = id; go('photo'); }
-  else if (act === 'open') { viewId = id; go('member'); }
-  else if (act === 'payFor') { last = {userId:String(id), month:cur}; go('payments'); }
-  else if (act === 'backup') {
-    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify({app:'hail-mary', saved:new Date().toISOString(), users, pays, anns, pin, marks, bin})],{type:'application/json'}));
-    a.download = 'hail-mary-backup.json'; a.click(); return;
-  }
-  else if (act === 'back') { reveal = false; menuOpen = false; if (hist.length) page = hist.pop(); }
-  else if (act === 'logout') { reveal = false; menuOpen = false; session = null; page = null; hist = []; mode = 'login'; sessionStorage.removeItem('hm_session'); }
-  else if (act === 'yr') yr = Math.max(+START.slice(0,4), yr + id);
-  else if (act === 'delPay') { if (!confirm('Delete this payment record? You can restore it from Deleted items.')) return; const dp = pays.find(x=>x.id===id); if (dp) toBin('pay', dp); pays = pays.filter(p=>p.id!==id); save(); }
-  else if (act === 'delAnn') { if (!confirm('Delete this post? You can restore it from Deleted items.')) return; const da = anns.find(x=>x.id===id); if (da) toBin('ann', da); anns = anns.filter(a=>a.id!==id); save(); }
-  else if (act === 'delMember') { if (!confirm('Remove this member and all their payment records?')) return; users = users.filter(u=>u.id!==id); pays = pays.filter(p=>p.userId!==id); save(); }
-  else if (act === 'delMedia') { if (!confirm('Delete this file? You can restore it from Deleted items.')) return; const dm = await tx('readonly', s=>s.get(id)); if (dm) { dm.deleted = Date.now(); await tx('readwrite', s=>s.put(dm)); } }
-  else if (act === 'csv') {
-    const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
-    const rows = [['Member','Phone','Month','Amount (GHS)','Note'], ...pays.map(p=>[nameOf(p.userId), (users.find(u=>u.id===p.userId)||{}).phone, p.month, p.amount, p.note])];
-    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));
-    a.download = 'hail-mary-payments.csv'; a.click(); return;
-  }
+  const act = b.dataset.act, raw = b.dataset.id, id = /^\d+$/.test(raw || '') ? Number(raw) : raw;
+  const upd = (table, rid, fields) => must(sb.from(table).update(fields).eq('id', rid));
+  let reload = false;
+  try {
+    if (act === 'menu') { menuOpen = !menuOpen; const mn = document.querySelector('.menu'); if (mn) mn.classList.toggle('open', menuOpen); b.setAttribute('aria-expanded', String(menuOpen)); return; }
+    else if (act === 'showpw') { $('#pw').type = b.checked ? 'text' : 'password'; return; }
+    else if (act === 'mode') { mode = raw; notice = ''; }
+    else if (act === 'role') { mode = raw === 'admin' ? 'admin' : 'login'; notice = ''; }
+    else if (act === 'nav') { go(raw); reload = true; }
+    else if (act === 'reveal') reveal = !reveal;
+    else if (act === 'open') { viewId = id; go('member'); reload = true; }
+    else if (act === 'payFor') { last = {userId:String(id), month:cur}; go('payments'); reload = true; }
+    else if (act === 'viewPhoto') { viewMediaId = id; go('photo'); }
+    else if (act === 'saveGallery') { await saveToGallery(id); return; }
+    else if (act === 'download') { await downloadMedia(id); return; }
+    else if (act === 'copy') { try { await navigator.clipboard.writeText(PAY_NUMBER); alert('Number copied.'); } catch { alert('Could not copy automatically. The number is ' + PAY_NUMBER); } return; }
+    else if (act === 'retry') { reload = true; mediaList = null; }
+    else if (act === 'clearPin') { await must(sb.from('settings').upsert({key:'pin', value:''})); reload = true; }
+    else if (act === 'mon') { const n = shiftMonth(adminMonth, id); if (n >= START && n <= cur) adminMonth = n; }
+    else if (act === 'yr') yr = Math.max(+START.slice(0,4), yr + id);
+    else if (act === 'markNot') { const mm = b.dataset.m; if (paidFor(raw, mm) > 0) return alert('That month already has a payment recorded.'); if (!isMarked(raw, mm)) await must(sb.from('marks').insert({user_id:raw, month:mm})); reload = true; }
+    else if (act === 'clearMark') { await must(sb.from('marks').delete().eq('user_id', raw).eq('month', b.dataset.m)); reload = true; }
+    else if (act === 'delPay') { if (!confirm('Delete this payment record? You can restore it from Deleted items.')) return; await upd('payments', id, {deleted_at: stamp()}); reload = true; }
+    else if (act === 'delAnn') { if (!confirm('Delete this post? You can restore it from Deleted items.')) return; await upd('announcements', id, {deleted_at: stamp()}); reload = true; }
+    else if (act === 'delMedia') { if (!confirm('Delete this file? You can restore it from Deleted items.')) return; await upd('media', id, {deleted_at: stamp()}); mediaList = null; }
+    else if (act === 'delMember') { if (!confirm('Remove this member and all their payment records for good?')) return; await must(sb.rpc('admin_remove_member', {p_id: raw})); reload = true; }
+    else if (act === 'restore') { const [kind, rid] = String(raw).split('-'); await upd(kind === 'pay' ? 'payments' : 'announcements', Number(rid), {deleted_at: null}); reload = true; }
+    else if (act === 'purge') { if (!confirm('Delete this forever? This cannot be undone.')) return; const [kind, rid] = String(raw).split('-'); await must(sb.from(kind === 'pay' ? 'payments' : 'announcements').delete().eq('id', Number(rid))); reload = true; }
+    else if (act === 'restoreMedia') { await upd('media', id, {deleted_at: null}); }
+    else if (act === 'purgeMedia') { if (!confirm('Delete this file forever? This cannot be undone.')) return; const m = binMedia.find(x=>x.id===id); if (m) await sb.storage.from(BUCKET).remove([m.path]); await must(sb.from('media').delete().eq('id', id)); }
+    else if (act === 'back') { reveal = false; menuOpen = false; if (hist.length) page = hist.pop(); reload = true; }
+    else if (act === 'logout') { await sb.auth.signOut(); session = null; page = null; hist = []; mode = 'login'; reveal = false; menuOpen = false; users = []; pays = []; anns = []; marks = []; bin = []; pin = ''; mediaList = null; binMedia = []; }
+    else if (act === 'csv') {
+      const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
+      const rows = [['Member','Phone','Month','Amount (GHS)','Note'], ...pays.map(p=>[nameOf(p.userId), (users.find(u=>u.id===p.userId)||{}).phone, p.month, p.amount, p.note])];
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'}));
+      a.download = 'valedictorians-21-payments.csv'; a.click(); return;
+    }
+    if (reload) await loadData();
+  } catch (err) { alert(friendly(err)); return; }
   render();
 });
 
-if (session) page = 'dashboard';
+/* ===== start ===== */
 (async () => {
-  const cfg = await hashPw(ADMIN_PW, 'cfg'), adm = users.find(x=>x.role==='ADMIN');
-  if (adm && LS.get('hm_admincfg', '') !== cfg) { await setPw(adm, ADMIN_PW); save(); LS.set('hm_admincfg', cfg); }
+  if (!configured) { render(); return; }
+  $('#app').innerHTML = '<p class="loading">Loading…</p>';
+  try {
+    const { data } = await sb.auth.getSession();
+    if (data.session) await begin(data.session.user, await profileOf(data.session.user));
+  } catch (err) { session = null; try { await sb.auth.signOut(); } catch {} }
   render();
 })();
+
 </script>
 </body>
 </html>
